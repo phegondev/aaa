@@ -1,9 +1,15 @@
+# Use version 3 of the Docker Compose file format.
 version: '3.8'
 
+# Define the services (containers) for your application.
 services:
-  banking-app:
+  # The name of your service. You can change this to something more descriptive.
+  app:
+    # Use the `build` instruction to tell Docker Compose to build the image from the Dockerfile.
     build: .
+    # Map port 8090 on the host to port 8090 in the container.
     ports:
       - "8090:8090"
-    volumes:
-      - ./uploads:/app/uploads
+    # Set the restart policy for the container. `unless-stopped` will restart the container
+    # unless it is explicitly stopped.
+    restart: unless-stopped
