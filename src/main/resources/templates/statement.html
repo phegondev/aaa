@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Statement</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f6f9fc; margin: 0; padding: 0; }
+        .container { max-width: 700px; margin: 20px auto; background: #ffffff; border-radius: 8px;
+                     padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2e86de; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #2e86de; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .credit { color: green; font-weight: bold; }
+        .debit { color: red; font-weight: bold; }
+        .footer { margin-top: 20px; font-size: 13px; color: #555; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Account Statement</h2>
+    <p>Dear <b th:text="${name}">Customer</b>, here is your account statement:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="txn : ${transactions}">
+            <td th:text="${#temporals.format(txn.transactionDate, 'dd-MMM-yyyy HH:mm')}"></td>
+            <td th:text="${txn.transactionType}"></td>
+            <td th:text="${txn.description}"></td>
+            <td th:classappend="${txn.transactionType.name() == 'DEPOSIT' ? 'credit' : 'debit'}"
+                th:text="'$' + ${txn.amount}"></td>
+            <td th:text="${txn.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>Thank you for banking with us.</p>
+    <div class="footer">
+        © 2025 Phegon Bank | Monthly Statement
+    </div>
+</div>
+</body>
+</html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Account Statement</title>-->
+<!--    <style>-->
+<!--        body { font-family: Arial, sans-serif; background: #f6f9fc; margin: 0; padding: 0; }-->
+<!--        .container { max-width: 700px; margin: 20px auto; background: #ffffff; border-radius: 8px;-->
+<!--                     padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }-->
+<!--        h2 { color: #2e86de; }-->
+<!--        table { width: 100%; border-collapse: collapse; margin-top: 20px; }-->
+<!--        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }-->
+<!--        th { background-color: #2e86de; color: white; }-->
+<!--        tr:nth-child(even) { background-color: #f9f9f9; }-->
+<!--        .footer { margin-top: 20px; font-size: 13px; color: #555; text-align: center; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h2>Account Statement</h2>-->
+<!--    <p>Dear <b th:text="${name}">Customer</b>, here is your account statement:</p>-->
+
+<!--    &lt;!&ndash; Statement table dynamically rendered &ndash;&gt;-->
+<!--    <div th:utext="${statement}"></div>-->
+
+<!--    <p>Thank you for banking with us.</p>-->
+<!--    <div class="footer">-->
+<!--        © 2025 Phegon Bank | Monthly Statement-->
+<!--    </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
