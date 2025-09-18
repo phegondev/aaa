@@ -1,6 +1,3 @@
-# Use version 3 of the Docker Compose file format.
-version: '3.8'
-
 # Define the services (containers) for your application.
 services:
   # The name of your service. You can change this to something more descriptive.
