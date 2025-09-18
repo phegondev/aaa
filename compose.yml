@@ -1,9 +1,27 @@
+## Define the services (containers) for your application.
+#services:
+#  # The name of your service. You can change this to something more descriptive.
+#  app:
+#    # Use the `build` instruction to tell Docker Compose to build the image from the Dockerfile.
+#    build: .
+#    # Map port 8090 on the host to port 8090 in the container.
+#    ports:
+#      - "8090:8090"
+#    # Set the restart policy for the container. `unless-stopped` will restart the container
+#    # unless it is explicitly stopped.
+#    restart: unless-stopped
+
+
 # Define the services (containers) for your application.
 services:
   # The name of your service. You can change this to something more descriptive.
   app:
     # Use the `build` instruction to tell Docker Compose to build the image from the Dockerfile.
-    build: .
+    build:
+      context: .
+      # Add memory and shared memory limits to prevent out-of-memory errors during build.
+      mem_limit: 2g
+      shm_size: 2g
     # Map port 8090 on the host to port 8090 in the container.
     ports:
       - "8090:8090"
