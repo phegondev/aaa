@@ -1,1 +1,24 @@
 
+name: Validate Build Only
+
+on:
+  pull_request:
+    branches:
+      - '**' # Triggers on pull requests targeting any branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests
