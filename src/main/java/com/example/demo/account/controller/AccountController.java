@@ -23,5 +23,4 @@ public class AccountController {
     public ResponseEntity<Response<?>> closeAccount(@PathVariable String accountNumber) {
         return ResponseEntity.ok(accountService.closeAccount(accountNumber));
     }
-
 }
