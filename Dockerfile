@@ -8,49 +8,41 @@
 #
 # ENTRYPOINT ["java", "-jar", "app.jar"]
 
-
-
 # Stage 1: Build the application
-# Use a full JDK image with a package manager and build tools for building the application.
-# The `AS builder` alias gives this stage a name, so we can reference it later.
+# Changed from alpine to jammy
 FROM eclipse-temurin:21-jdk-jammy AS builder
 
-# Set the working directory inside the container for this stage.
 WORKDIR /app
 
-# Copy the Maven build files first to leverage Docker's build cache.
-# This ensures that dependencies are only downloaded when the pom.xml changes.
+# Install Maven (apt for Debian/Ubuntu)
+# Add --no-install-recommends to keep image size down
+RUN apt-get update && apt-get install -y --no-install-recommends maven && rm -rf /var/lib/apt/lists/*
+
+# Copy the Maven build files (pom.xml) first to leverage Docker cache
 COPY pom.xml .
 
-# Download dependencies. This is a separate step to improve caching.
+# Download dependencies - separate step to cache dependencies
 RUN mvn dependency:go-offline -B
 
-# Copy the source code.
+# Copy source code.
 COPY src ./src
 
-# Build the Spring Boot application, skipping tests for a faster build.
+# Build the Spring Boot application
 RUN mvn clean package -Dmaven.test.skip=true
 
 # Stage 2: Create the final production image
-# Use a lean JRE image, which is much smaller than a JDK image.
+# Changed from alpine to jammy
 FROM eclipse-temurin:21-jre-jammy
 
-# Create a non-root user and group to run the application.
-# Running as a non-root user is a security best practice to prevent privilege escalation.
-RUN addgroup --system appgroup && adduser --system --group appgroup appuser
-
-# Set the working directory for the final image.
 WORKDIR /app
 
-# Copy only the compiled JAR file from the "builder" stage.
-# The --from=builder flag is the key to multi-stage builds.
-COPY --from=builder --chown=appuser:appgroup /app/target/*.jar app.jar
+# No need to install libstdc++ or glibc compatibility, they are included by default
+# in glibc-based distributions like Ubuntu/Debian (Jammy Jellyfish).
 
-# Expose the application's port.
-EXPOSE 8090
+# Copy the JAR from the 'builder' stage
+COPY --from=builder /app/target/*.jar app.jar
 
-# Switch to the non-root user.
-USER appuser
+EXPOSE 8085
 
-# Define the command to run the application when the container starts.
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the jar
+ENTRYPOINT ["java","-jar","app.jar"]
